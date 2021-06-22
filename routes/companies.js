@@ -17,7 +17,6 @@ router.get('/:code', async (req, res, next) => {
     try {
         const { code } = req.params;
         const results = await db.query(`SELECT * FROM companies JOIN invoices ON companies.code=invoices.comp_code WHERE code=$1`, [code])
-        console.log(results.rows);
         if(!results.rows[0]){
             throw new ExpressError("Company not found", 404);
         }
@@ -37,7 +36,7 @@ router.post('/', async (req, res, next) => {
     try {
         const {code, name, description} = req.body;
         const results = await db.query(`INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING *`, [code, name, description]);
-        return res.json({company: results.rows[0]})
+        return res.status(201).json({company: results.rows[0]})
     } catch(e) {
         return next(e);
     }
