@@ -7,22 +7,22 @@ const app = require('../app.js');
 
 let companyArray
 let testCompany;
-let testInvoice;
 
 beforeEach(async () => {
+    await db.query(`DELETE FROM companies`);
+    await db.query(`DELETE FROM invoices`);
     const companyRes = await db.query(`
         INSERT INTO companies (code, name, description) 
-        VALUES ('test', 'Test Company', 'This company is a test company')
+        VALUES ('test1', 'Test Company 1', 'This company is a test company')
         RETURNING *`);
     const invoiceRes = await db.query(`
         INSERT INTO invoices (comp_code, amt) 
-        VALUES ('test', 1000)
+        VALUES ('test1', 1000)
         RETURNING *`);
     const { code, name, description } = companyRes.rows[0];
     const {id, comp_code, amt, paid, add_date, paid_date} = invoiceRes.rows[0];
     companyArray = companyRes.rows;
     testCompany = {code, name, description, invoices: [{id, comp_code, amt, paid, add_date: add_date.toISOString(), paid_date}]};
-    testInvoice = {id, comp_code, amt, paid, add_date: String(add_date), paid_date, company: companyRes.rows[0]}
 
 })
 
@@ -48,9 +48,9 @@ describe('GET /companies/[code]', () => {
 
 describe('POST /companies', () => {
     test("creates a new company and returns it", async () => {
-        const res = await request(app).post('/companies').send({code: 'test2', name: 'Test Company 2', description: 'This is the second test company'});
+        const res = await request(app).post('/companies').send({name: 'Test Company 2', description: 'This is the second test company'});
         expect(res.statusCode).toBe(201);
-        expect(res.body).toEqual({company: {code: 'test2', name: 'Test Company 2', description: 'This is the second test company'}})
+        expect(res.body).toEqual({company: {code: 'test-company-2', name: 'Test Company 2', description: 'This is the second test company'}})
     })
 })
 
@@ -78,11 +78,20 @@ describe('DELETE /companies/[code]', () => {
     })
 })
 
+describe("404 Error handler", () => {
+    test("Should return 404", async () => {
+        const res = await request(app).get('/fakeroute');
+        expect(res.statusCode).toBe(404);
+    })
+})
+
 afterEach(async () => {
-    await db.query(`DELETE FROM companies`);
-    await db.query(`DELETE FROM invoices`)
+    // await db.query(`DELETE FROM companies`);
+    // await db.query(`DELETE FROM invoices`);
 })
 
 afterAll(async () => {
+    await db.query(`DELETE FROM companies`);
+    await db.query(`DELETE FROM invoices`);
     await db.end();
 })
