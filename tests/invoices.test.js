@@ -52,10 +52,16 @@ describe("POST /invoices", () => {
 })
 
 describe("PUT /invoices/[id]", () => {
-    test("Should update an existing invoice based on id and return it", async () => {
+    test("Should update an amount for an existing invoice based on id and return it", async () => {
         const res = await request(app).put(`/invoices/${testInvoice.id}`).send({amt: 2000});
         expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({invoice: {id: testInvoice.id, comp_code: 'test2', amt: 2000, paid: testInvoice.paid, add_date: testInvoice.add_date, paid_date: testInvoice.paid_date}})
+        expect(res.body).toEqual({invoice: {id: testInvoice.id, comp_code: 'test2', amt: 2000, paid: false, add_date: testInvoice.add_date, paid_date: null}})
+    })
+
+    test("Should mark an existing invoice as paid and return it", async () => {
+        const res = await request(app).put(`/invoices/${testInvoice.id}`).send({amt: 1000, paid: true});
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual({invoice: {id: testInvoice.id, comp_code: 'test2', amt: 1000, paid: true, add_date: testInvoice.add_date, paid_date: expect.any(String)}})
     })
 
     test("SHould return 404 if no invoice is found", async () => {
