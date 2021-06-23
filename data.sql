@@ -1,9 +1,9 @@
 \c biztime
 
 DROP TABLE IF EXISTS invoices;
+DROP TABLE IF EXISTS companies_industries;
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS industries;
-DROP TABLE IF EXISTS companies_industries;
 
 CREATE TABLE companies (
     code text PRIMARY KEY,
@@ -27,9 +27,9 @@ CREATE TABLE industries (
 );
 
 CREATE TABLE companies_industries(
-  id serial PRIMARY KEY,
   comp_code text NOT NULL REFERENCES companies ON DELETE CASCADE,
-  industry_code text NOT NULL REFERENCES industries ON DELETE CASCADE
+  industry_code text NOT NULL REFERENCES industries ON DELETE CASCADE,
+  PRIMARY KEY(comp_code, industry_code)
 );
 
 INSERT INTO companies
@@ -52,3 +52,8 @@ INSERT INTO companies_industries (comp_code, industry_code)
          ('apple', 'fin'),
          ('ibm', 'prod'),
          ('apple', 'prod');
+
+SELECT industry_code, industry FROM companies_industries AS ci 
+JOIN industries AS i
+ON ci.industry_code=i.code
+WHERE ci.comp_code = 'apple';
