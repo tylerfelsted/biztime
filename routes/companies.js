@@ -14,6 +14,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+//Returns a specific company - Displays all invoices and industries associated with that company
 router.get('/:code', async (req, res, next) => {
     try {
         const { code } = req.params;
@@ -42,6 +43,7 @@ router.get('/:code', async (req, res, next) => {
     }
 });
 
+//Creates a new company
 router.post('/', async (req, res, next) => {
     try {
         const {name, description} = req.body;
@@ -53,6 +55,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
+//Updates an existing company
 router.put('/:code', async (req, res, next) => {
     try {
         const { code } = req.params;
@@ -67,6 +70,7 @@ router.put('/:code', async (req, res, next) => {
     }
 });
 
+//Deletes a company
 router.delete('/:code', async (req, res, next) => {
     try {
         const { code } = req.params;

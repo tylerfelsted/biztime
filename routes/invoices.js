@@ -3,6 +3,7 @@ const router = new express.Router();
 const db = require("../db");
 const ExpressError = require("../expressError");
 
+//Returns all invoices
 router.get('/', async (req, res, next) => {
     try {
         const results = await db.query(`SELECT * FROM invoices`);
@@ -12,6 +13,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+//Returns a specific invoice - Displays the company that the invoice is associated with
 router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params
@@ -26,6 +28,7 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+//Creates a new invoice
 router.post('/', async (req, res, next) => {
     try {
         const { comp_code, amt } = req.body;
@@ -36,6 +39,7 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+//Updates an existing invoice - either the amount, or whether or not it has been paid
 router.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -52,6 +56,7 @@ router.put('/:id', async (req, res, next) => {
     }
 })
 
+//Deletes an invoice
 router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;

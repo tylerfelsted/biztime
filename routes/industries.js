@@ -3,6 +3,7 @@ const router = new express.Router();
 const db = require("../db");
 const ExpressError = require("../expressError");
 
+//Displays all industries
 router.get('/', async (req, res, next) => {
     try {
         const results = await db.query('SELECT * FROM industries');
@@ -12,6 +13,7 @@ router.get('/', async (req, res, next) => {
     }
 })
 
+//Returns a specifc industry - displays all associated companies with that industry
 router.get('/:code', async (req, res, next) => {
     try {
         const { code } = req.params;
@@ -37,6 +39,7 @@ router.get('/:code', async (req, res, next) => {
     }
 })
 
+//Creates a new industry
 router.post('/', async (req, res, next) => {
     try{
         const {code, industry} = req.body;
@@ -47,6 +50,7 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+//Associates a company with an industry
 router.post('/:code', async (req, res, next) => {
     try{
         const industry_code = req.params.code;
